@@ -244,7 +244,7 @@ class ListSpec extends FlatSpec with PropertyChecks {
 
   behavior of "3.11.1 sumViaFoldLeft"
 
- /* it should "be ismorphic to sum" in {
+  it should "be ismorphic to sum" in {
     forAll("l") { l: List[Int] =>
       assertResult(sum(l))(sumViaFoldLeft(l))
     }
@@ -263,6 +263,8 @@ class ListSpec extends FlatSpec with PropertyChecks {
       (List(1d,2d,3d), 6d))
     forAll(tests)(testProductViaFoldLeft)
   }
+
+  /*
 
   behavior of "3.11.3 lengthViaFoldLeft"
 
