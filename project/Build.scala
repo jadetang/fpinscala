@@ -5,6 +5,7 @@ object FPInScalaBuild extends Build {
   val opts = Project.defaultSettings ++ Seq(
     scalaVersion := "2.10.4",
     resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+    resolvers += "OSChina Repository" at "http://maven.oschina.net/content/groups/public/",
     libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test",
     libraryDependencies += "junit" % "junit" % "4.12" % "test",
     libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.11.5" % "test"
