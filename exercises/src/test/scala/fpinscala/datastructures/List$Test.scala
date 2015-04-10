@@ -244,7 +244,7 @@ class ListSpec extends FlatSpec with PropertyChecks {
 
   behavior of "3.11.1 sumViaFoldLeft"
 
-  it should "be ismorphic to sum" in {
+  it should "be ismorismorphicphic to sum" in {
     forAll("l") { l: List[Int] =>
       assertResult(sum(l))(sumViaFoldLeft(l))
     }
@@ -306,15 +306,15 @@ class ListSpec extends FlatSpec with PropertyChecks {
 
 
 
-  behavior of "3.14.1 appendViaFoldLeft"
+ /* behavior of "3.14.1 appendViaFoldLeft"
 
   it should "be ismorphic to append" in {
     forAll("l1", "l2") { (l1: List[Int], l2: List[Int]) =>
       assertResult(append(l1, l2))(appendViaFoldLeft(l1, l2))
     }
-  }
+  }*/
 
-  /*
+
   behavior of "3.14.2 appendViaFoldRight"
 
   it should "be ismorphic to append" in {
@@ -322,6 +322,9 @@ class ListSpec extends FlatSpec with PropertyChecks {
       assertResult(append(l1, l2))(appendViaFoldRight(l1, l2))
     }
   }
+
+
+
 
   behavior of "3.15 concat"
 
@@ -341,131 +344,139 @@ class ListSpec extends FlatSpec with PropertyChecks {
     forAll(tests)(testConcat)
   }
 
-  behavior of "3.16 add1"
 
-  it should "work" in {
-    def testAdd1(l: List[Int], expected: List[Int]) =
-      assertResult(expected)(add1(l))
 
-    val tests = Table(
-      ("l", "add1(l)"),
-      (Nil, Nil),
-      (List(1, 2, 3), List(2, 3, 4)),
-      (List(-1), List(0)))
-    forAll(tests)(testAdd1)
-  }
+ behavior of "3.16 add1"
 
-  behavior of "3.17 doubleToString"
+ it should "work" in {
+   def testAdd1(l: List[Int], expected: List[Int]) =
+     assertResult(expected)(add1(l))
 
-  it should "work" in {
-    def testDoubleToString(l: List[Double], expected: List[String]) =
-      assertResult(expected)(doubleToString(l))
+   val tests = Table(
+     ("l", "add1(l)"),
+     (Nil, Nil),
+     (List(1, 2, 3), List(2, 3, 4)),
+     (List(-1), List(0)))
+   forAll(tests)(testAdd1)
+ }
 
-    val tests = Table(
-      ("l", "doubleToString(l)"),
-      (Nil, Nil),
-      (List(1d, -2d, 3d), List("1.0", "-2.0", "3.0")),
-      (List(-1.234d), List("-1.234")))
-    forAll(tests)(testDoubleToString)
-  }
 
-  behavior of "3.18 map"
+ behavior of "3.17 doubleToString"
 
-  it should "work" in {
-    def testMap[A](l: List[A], expected: List[A]) =
-      assertResult(expected)(map(l)(_.toString + "x"))
+ it should "work" in {
+   def testDoubleToString(l: List[Double], expected: List[String]) =
+     assertResult(expected)(doubleToString(l))
 
-    val tests = Table(
-      ("l", "map(l)(...)"),
-      (Nil, Nil),
-      (List(1, 2, 3), List("1x", "2x", "3x")),
-      (List("a", "b", "c"), List("ax", "bx", "cx")))
-    forAll(tests)(testMap)
-  }
+   val tests = Table(
+     ("l", "doubleToString(l)"),
+     (Nil, Nil),
+     (List(1d, -2d, 3d), List("1.0", "-2.0", "3.0")),
+     (List(-1.234d), List("-1.234")))
+   forAll(tests)(testDoubleToString)
+ }
 
-  it should "for all l: List[Int] ==> l.map(_.toString).map(_.toInt) == l" in {
-    forAll("l: List[Int]") { l: List[Int] =>
-      val strList = map(l)(_.toString)
-      assertResult(l)(map(strList)(_.toInt))
-    }
-  }
 
-  behavior of "3.19 filter"
+ behavior of "3.18 map"
 
-  it should "work" in {
-    def testFilter[A](l: List[A], expected: List[A]) =
-      assertResult(expected)(filter(l)(_.toString.toInt % 2 == 0))
+ it should "work" in {
+   def testMap[A](l: List[A], expected: List[A]) =
+     assertResult(expected)(map(l)(_.toString + "x"))
 
-    val tests = Table(
-      ("l", "filter(l)(...)"),
-      (Nil, Nil),
-      (List(1, 2, 3, 4), List(2, 4)),
-      (List("1", "2", "3"), List("2")))
-    forAll(tests)(testFilter)
-  }
+   val tests = Table(
+     ("l", "map(l)(...)"),
+     (Nil, Nil),
+     (List(1, 2, 3), List("1x", "2x", "3x")),
+     (List("a", "b", "c"), List("ax", "bx", "cx")))
+   forAll(tests)(testMap)
+ }
 
-  behavior of "3.20 flatMap"
+ it should "for all l: List[Int] ==> l.map(_.toString).map(_.toInt) == l" in {
+   forAll("l: List[Int]") { l: List[Int] =>
+     val strList = map(l)(_.toString)
+     assertResult(l)(map(strList)(_.toInt))
+   }
+ }
 
-  it should "work" in {
-    def testFlatMap[A](l: List[A], expected: List[A]) =
-      assertResult(expected)(flatMap(l)(x => List(x.toString + "x")))
+ behavior of "3.19 filter"
 
-    val tests = Table(
-      ("l", "flatMap(l)(...)"),
-      (Nil, Nil),
-      (List(1, 2, 3), List("1x", "2x", "3x")),
-      (List("a", "b", "c"), List("ax", "bx", "cx")))
-    forAll(tests)(testFlatMap)
-  }
+ it should "work" in {
+   def testFilter[A](l: List[A], expected: List[A]) =
+     assertResult(expected)(filter(l)(_.toString.toInt % 2 == 0))
 
-  it should "be equivalent to Scala List function" in {
-    forAll(arbListTuple[Int].arbitrary) { case (l, sl) =>
-      assertResult(toList(sl.flatMap(x => SList(x + "x"))))(flatMap(l)(x => List(x + "x")))
-    }
-  }
+   val tests = Table(
+     ("l", "filter(l)(...)"),
+     (Nil, Nil),
+     (List(1, 2, 3, 4), List(2, 4)),
+     (List("1", "2", "3"), List("2")))
+   forAll(tests)(testFilter)
+ }
 
-  behavior of "3.21 filterViaFlatMap"
+ behavior of "3.20 flatMap"
 
-  it should "work" in {
-    def testFilterViaFlatMap[A](l: List[A], expected: List[A]) =
-      assertResult(expected)(filterViaFlatMap(l)(_.toString.toInt % 2 == 0))
+ it should "work" in {
+   def testFlatMap[A](l: List[A], expected: List[A]) =
+     assertResult(expected)(flatMap(l)(x => List(x.toString + "x")))
 
-    val tests = Table(
-      ("l", "filter(l)(...)"),
-      (Nil, Nil),
-      (List(1, 2, 3, 4), List(2, 4)),
-      (List("1", "2", "3"), List("2")))
-    forAll(tests)(testFilterViaFlatMap)
-  }
+   val tests = Table(
+     ("l", "flatMap(l)(...)"),
+     (Nil, Nil),
+     (List(1, 2, 3), List("1x", "2x", "3x")),
+     (List("a", "b", "c"), List("ax", "bx", "cx")))
+   forAll(tests)(testFlatMap)
+ }
 
-  behavior of "3.22 addPairwise"
+ it should "be equivalent to Scala List function" in {
+   forAll(arbListTuple[Int].arbitrary) { case (l, sl) =>
+     assertResult(toList(sl.flatMap(x => SList(x + "x"))))(flatMap(l)(x => List(x + "x")))
+   }
+ }
 
-  it should "work" in {
-    def testAddPairwise(l1: List[Int], l2: List[Int], expected: List[Int]) =
-      assertResult(expected)(addPairwise(l1, l2))
 
-    val tests = Table(
-      ("l1", "l2", "addPairwise(l1,l2)"),
-      (Nil, Nil, Nil),
-      (List(1, 2, 3), List(4, 5, 6), List(5, 7, 9)),
-      (List(1,2,3), List(4,5), List(5,7)))
-    forAll(tests)(testAddPairwise)
-  }
+ behavior of "3.21 filterViaFlatMap"
 
-  behavior of "3.23 zipWith"
+ it should "work" in {
+   def testFilterViaFlatMap[A](l: List[A], expected: List[A]) =
+     assertResult(expected)(filterViaFlatMap(l)(_.toString.toInt % 2 == 0))
 
-  it should "work" in {
-    def testZipWith(l1: List[Int], l2: List[String], expected: List[Int]) =
-      assertResult(expected)(zipWith(l1, l2){case (a,b) => a + b.toInt})
+   val tests = Table(
+     ("l", "filter(l)(...)"),
+     (Nil, Nil),
+     (List(1, 2, 3, 4), List(2, 4)),
+     (List("1", "2", "3"), List("2")))
+   forAll(tests)(testFilterViaFlatMap)
+ }
 
-    val tests = Table(
-      ("l1", "l2", "zipWith(l1,l2)"),
-      (Nil, Nil, Nil),
-      (List(1, 2, 3), List("4", "5", "6"), List(5, 7, 9)),
-      (List(1,2,3), List("4","5"), List(5,7)))
-    forAll(tests)(testZipWith)
-  }
 
+ behavior of "3.22 addPairwise"
+
+ it should "work" in {
+   def testAddPairwise(l1: List[Int], l2: List[Int], expected: List[Int]) =
+     assertResult(expected)(addPairwise(l1, l2))
+
+   val tests = Table(
+     ("l1", "l2", "addPairwise(l1,l2)"),
+     (Nil, Nil, Nil),
+     (List(1, 2, 3), List(4, 5, 6), List(5, 7, 9)),
+     (List(1,2,3), List(4,5), List(5,7)))
+   forAll(tests)(testAddPairwise)
+ }
+
+
+ behavior of "3.23 zipWith"
+
+ it should "work" in {
+   def testZipWith(l1: List[Int], l2: List[String], expected: List[Int]) =
+     assertResult(expected)(zipWith(l1, l2){case (a,b) => a + b.toInt})
+
+   val tests = Table(
+     ("l1", "l2", "zipWith(l1,l2)"),
+     (Nil, Nil, Nil),
+     (List(1, 2, 3), List("4", "5", "6"), List(5, 7, 9)),
+     (List(1,2,3), List("4","5"), List(5,7)))
+   forAll(tests)(testZipWith)
+ }
+
+/*
   behavior of "3.24 hasSubsequence"
 
   it should "work" in {
@@ -481,6 +492,9 @@ class ListSpec extends FlatSpec with PropertyChecks {
       (List(1, 2, 3, 4), List(4), true),
       (List(1, 2, 3, 4), List(3,2), false))
     forAll(tests)(testHasSubsequence)
-  }*/
+  }
+*/
+
+
 
 }

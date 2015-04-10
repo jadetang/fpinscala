@@ -1,5 +1,7 @@
 package fpinscala.datastructures
 
+import scala.collection.mutable.ListBuffer
+
 sealed trait List[+A]
 
 // `List` data type, parameterized on a type, `A`
@@ -111,13 +113,46 @@ object List {
 
   def productViaFoldLeft(l: List[Double]): Double = foldLeft(l, 1.0)(_ * _)
 
-  def lengthViaFoldLeft[A](l: List[A]): Int = foldLeft(l, 0)((_,acc) => acc + 1)
+  def lengthViaFoldLeft[A](l: List[A]): Int = foldLeft(l, 0)((_, acc) => acc + 1)
 
-  def reverse[A](l: List[A]): List[A] = foldLeft(l, List[A]())((h,acc) => Cons(h, acc))
+  def reverse[A](l: List[A]): List[A] = foldLeft(l, List[A]())((h, acc) => Cons(h, acc))
 
-  def foldLeftViaFoldRight[A,B](l:List[A],z:B)(f:(A,B)=>B):B= foldRight(reverse(l),z)(f)
+  def foldLeftViaFoldRight[A, B](l: List[A], z: B)(f: (A, B) => B): B = foldRight(reverse(l), z)(f)
 
-  def appendViaFoldLeft[A](l:List[A],element:A):List[A] = sys.error("todo")
+  def appendViaFoldLeft[A](a: List[A], b: List[A]): List[A] = sys.error("todo")
 
+  def appendViaFoldRight[A](a: List[A], b: List[A]): List[A] = foldRight(a, b)((h, acc) => Cons(h, acc))
+
+  def concat[A](l: List[List[A]]): List[A] = {
+    foldRight(l, Nil: List[A])(appendViaFoldRight(_, _))
+  }
+
+  def add1(l: List[Int]): List[Int] = map(l)(_ + 1)
+
+  def doubleToString(l: List[Double]): List[String] = map(l)(_.toString)
+
+  def filter[A](l: List[A])(f: A => Boolean): List[A] = l match {
+    case Nil => Nil
+    case Cons(x, xs) if f(x) => append(List(x), filter(xs)(f))
+    case Cons(_, xs) => filter(xs)(f)
+  }
+
+  def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] = concat(map(l)(f(_)))
+
+  def filterViaFlatMap[A](l: List[A])(f: A => Boolean): List[A] = flatMap(l)((x: A) => if (f(x)) List(x) else Nil)
+
+  def addPairwise(left:List[Int],right:List[Int]):List[Int] = (left,right) match {
+    case (x,Nil) => Nil
+    case (Nil,y) => Nil
+    case (Cons(x,xs),Cons(y,ys))=>append(List(x+y),addPairwise(xs,ys))
+  }
+
+  def zipWith[A,B,C](left:List[A],right:List[B])(f:(A,B)=>C):List[C] = (left,right) match {
+    case (x,Nil) => Nil
+    case (Nil,y) => Nil
+    case (Cons(x,xs),Cons(y,ys))=>append(List(f(x,y)),zipWith(xs,ys)(f))
+  }
+
+  def hasSubsequence[A](list:List[A],sub:List[A]):Boolean = sys.error("todo")
 
 }
