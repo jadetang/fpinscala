@@ -122,7 +122,7 @@ class StreamSpec extends FlatSpec with PropertyChecks {
     }
   }
 
- /* behavior of "5.5 takeWhileViaFoldRight"
+ behavior of "5.5 takeWhileViaFoldRight"
 
   it should "work" in {
     def testTakeWhileViaFoldRight(as: Stream[Int], expected: List[Int]) =
@@ -141,6 +141,7 @@ class StreamSpec extends FlatSpec with PropertyChecks {
       assertResult(l.takeWhile(even))(Stream(l: _*).takeWhileViaFoldRight(even).toList)
     }
   }
+
 
   behavior of "5.6 headOption"
 
@@ -161,6 +162,7 @@ class StreamSpec extends FlatSpec with PropertyChecks {
       assertResult(l.headOption)(Stream(l: _*).headOption)
     }
   }
+
 
   behavior of "5.7.1 map"
 
@@ -204,6 +206,8 @@ class StreamSpec extends FlatSpec with PropertyChecks {
     }
   }
 
+
+
   behavior of "5.7.3 append"
 
   it should "work" in {
@@ -224,7 +228,11 @@ class StreamSpec extends FlatSpec with PropertyChecks {
     }
   }
 
-  behavior of "5.7.4 flatMap"
+
+
+
+
+ behavior of "5.7.4 flatMap"
 
   def plusXStream[A](a: A) = Stream(plusX(a))
   def plusXList[A](a: A) = List(plusX(a))
@@ -246,6 +254,8 @@ class StreamSpec extends FlatSpec with PropertyChecks {
       assertResult(l.flatMap(plusXList))(Stream(l: _*).flatMap(plusXStream).toList)
     }
   }
+
+  /*
 
   behavior of "5.8 constant"
 
@@ -514,7 +524,7 @@ class StreamSpec extends FlatSpec with PropertyChecks {
       (Stream(0, 2), Stream(1, 3, 5), List(Some(0) -> Some(1), Some(2) -> Some(3), None -> Some(5))))
     forAll(tests)(testZipAll)
   }
-
+   */
   behavior of "5.14 startsWith"
 
   it should "work" in {
@@ -535,6 +545,8 @@ class StreamSpec extends FlatSpec with PropertyChecks {
     forAll(tests)(testStartsWith)
   }
 
+
+  /*
   behavior of "5.15 tails using unfold"
 
   it should "work" in {
